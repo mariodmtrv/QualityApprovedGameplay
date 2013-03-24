@@ -1,0 +1,86 @@
+﻿namespace LabyrinthRefactored
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Management.Instrumentation;
+
+    public static class UserInterface
+    {
+        public static void DisplayException(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        public static void DisplayInstructions(string instruction)
+        {
+            Console.WriteLine(instruction);
+        }
+
+        public static string GetUserName()
+        {
+            DisplayInstructions(Messages.EnterNameForScoreboard);
+            string name = Console.ReadLine();
+            return name;
+        }
+
+        public static void DisplayEscapedMessage(int movesCount)
+        {
+            Console.WriteLine(
+                   "Congratulations! You escaped in {0} moves.",
+                   movesCount);
+        }
+
+        public static string GetInput()
+        {
+            Console.WriteLine(Messages.GetInput);
+            string inputLine = Console.ReadLine();
+            return inputLine;
+        }
+
+        internal static void PrintLabyrinth(Labyrinth labyrinth)
+        {
+            int labyrinthSize = Labyrinth.LabyrinthSize;
+            for (int row = 0; row < labyrinthSize; row++)
+            {
+                for (int col = 0; col < labyrinthSize; col++)
+                {
+                    Cell cell = labyrinth.GetCell(row, col);
+                    Console.Write(cell.ValueChar + " ");
+                }
+
+                Console.WriteLine();
+            }
+        }
+
+        internal static void TopResults(List<PlayerResult> topResults)
+        {
+            try
+            {
+                if (topResults.Count == 0)
+                {
+                    throw new InstanceNotFoundException(Messages.ScoreboardEmpty);
+                }
+                else
+                {
+                    DisplayTopResultsList(topResults);
+                }
+            }
+            catch (InstanceNotFoundException infe)
+            {
+                DisplayException(infe.Message);
+            }
+        }
+
+        private static void DisplayTopResultsList(List<PlayerResult> topResults)
+        {
+            for (int index = 0; index < topResults.Count; index++)
+            {
+                Console.WriteLine(
+                                  "{0}. {1} --> {2} moves",
+                                  index + 1,
+                                  topResults[index].PlayerName,
+                                  topResults[index].MovesCount);
+            }
+        }
+    }
+}
